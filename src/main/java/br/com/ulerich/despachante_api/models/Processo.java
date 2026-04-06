@@ -9,6 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "processos")
@@ -18,16 +20,20 @@ public class Processo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_processo;
 
-    private String tipo_servico; // Ex: Licenciamento 2026, Transferência
-    private String status_atual; // Ex: Aguardando Pagamento, No Detran, Concluído
-    private LocalDate data_entrada; // Salva a data exata que o serviço começou
+    @NotBlank(message = "O tipo de serviço é obrigatório (Ex: Transferência, 1º Emplacamento)")
+    private String tipo_servico;
 
-    // Mágica da conexão: Todo processo é vinculado a um carro específico!
+    @NotBlank(message = "O status atual é obrigatório (Ex: Aguardando Pagamento, Em Análise)")
+    private String status_atual;
+
+    private LocalDate data_entrada;
+
+    @NotNull(message = "O processo deve obrigatoriamente estar vinculado a um veículo")
     @ManyToOne
     @JoinColumn(name = "id_veiculo")
     private Veiculo veiculo;
 
-    // Construtor vazio (obrigatório)
+
     public Processo() {
     }
 
@@ -70,5 +76,10 @@ public class Processo {
 
     public void setVeiculo(Veiculo veiculo) {
         this.veiculo = veiculo;
+    }
+
+    @jakarta.persistence.PrePersist
+    public void preencherDataAutomaticamente() {
+        this.data_entrada = LocalDate.now();
     }
 }

@@ -2,6 +2,7 @@ package br.com.ulerich.despachante_api.controllers;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +26,7 @@ public class ProcessoController {
     }
 
     @PostMapping
-    public Processo salvar(@RequestBody Processo processo) {
+    public Processo salvar(@Valid @RequestBody Processo processo) {
         return processoRepository.save(processo);
     }
 }
